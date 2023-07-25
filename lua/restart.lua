@@ -16,6 +16,17 @@ return {
 			end
 		end
 
+		vim.api.nvim_create_autocmd("VimEnter", {
+			nested = true,
+			callback = function()
+				if vim.g.NVIM_RESTARTING then
+					vim.g.NVIM_RESTARTING = false
+					require("possession.session").load("restart")
+					require("possession.session").delete("restart", { no_confirm = true })
+					vim.opt.cmdheight = 1
+				end
+			end,
+		})
 		vim.api.nvim_create_user_command("Restart", function()
 			if vim.fn.has("gui_running") then
 				if restart_cmd == nil then
@@ -34,17 +45,5 @@ return {
 
 			vim.cmd([[qa!]])
 		end, {})
-
-		vim.api.nvim_create_autocmd("VimEnter", {
-			nested = true,
-			callback = function()
-				if vim.g.NVIM_RESTARTING then
-					vim.g.NVIM_RESTARTING = false
-					require("possession.session").load("restart")
-					require("possession.session").delete("restart", { no_confirm = true })
-					vim.opt.cmdheight = 1
-				end
-			end,
-		})
 	end,
 }
