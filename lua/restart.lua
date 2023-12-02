@@ -21,9 +21,12 @@ return {
 			callback = function()
 				if vim.g.NVIM_RESTARTING then
 					vim.g.NVIM_RESTARTING = false
-					require("possession.session").load("restart")
-					require("possession.session").delete("restart", { no_confirm = true })
-					vim.opt.cmdheight = 1
+					local session = require("possession.session")
+					local ok = pcall(session.load, "restart")
+					if ok then
+						require("possession.session").delete("restart", { no_confirm = true })
+						vim.opt.cmdheight = 1
+					end
 				end
 			end,
 		})
